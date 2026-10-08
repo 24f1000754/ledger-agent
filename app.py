@@ -160,8 +160,11 @@ def answer(question):
     is_refund = bool(re.search(r"refund", q))
     is_void = bool(re.search(r"\bvoid", q))
     status = "refunded" if is_refund else ("void" if is_void else "paid")
-    is_count = bool(re.search(r"\b(how many|count|number of)\b", q))
-    is_avg = bool(re.search(r"\b(average|avg|mean)\b", q))
+    is_avg = bool(re.search(r"\b(average|avg|mean|typical|per order)\b", q))
+    # "On average, how many dollars..." is an average, not a count
+    is_count = bool(re.search(r"\b(how many|count|number of)\b", q)) and not is_avg
+    if re.search(r"how many (us )?(dollars|usd|\$)", q):
+        is_count = False
     is_qty = bool(re.search(r"\b(units|quantity|qty|items sold)\b", q))
     is_top = bool(re.search(r"\b(which|what|who|top|most|highest|best|least|lowest|largest|biggest)\b", q))
 
